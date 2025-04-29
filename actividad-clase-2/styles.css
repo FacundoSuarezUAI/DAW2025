@@ -6,7 +6,6 @@ body{
 .superior-header{
     display: flex;
     justify-content: flex-start;
-
 }
 
 .header-button-ref{
@@ -14,6 +13,7 @@ body{
     color: rgb(5, 5, 82);
     padding: 10px;
     font-weight: 600;
+    cursor: pointer;
 }
 
 .separador{
@@ -25,6 +25,7 @@ body{
     padding: 10px;
     font-size: 30px;
     border-radius: 10px;
+    cursor: pointer;
 }
 
 
@@ -47,12 +48,14 @@ body{
     font-size: 30px;
     color: rgb(5, 5, 82);
     border-radius: 10px;
+    cursor: pointer;
 }
 
 #header-button-without-background {
     color: rgb(5, 5, 82);
     background-color: transparent;
     margin-left: 10px;
+    cursor: pointer;
 }
 
 .btn-ingresar {
@@ -61,6 +64,7 @@ body{
     padding: 10px;
     border-radius: 10px;
     font-size: 20px;
+    cursor: pointer;
 }
 
 
@@ -292,7 +296,7 @@ body{
 
 /* FOOTER */
 footer {
-    background-color: #fff;
+    background-color: rgb(244, 244, 244);
     padding: 40px 20px 20px;
     border-top: 1px solid #ddd;
     font-family: sans-serif;
@@ -310,7 +314,7 @@ footer {
     margin-bottom: 10px;
   }
   
-  .footer-container > span {
+  .footer-container span {
     display: block;
     margin-bottom: 20px;
     color: #666;
