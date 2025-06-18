@@ -207,7 +207,7 @@ dniInput.addEventListener("focus", () => {
   hideError(dniInput, errorDni);
 });
 
-// bonus
+// bonus (copiar nombre del input en el formtitle)
 
 fullNameInput.addEventListener("input", () => {
   const nombreActual = fullNameInput.value.trim();
@@ -243,11 +243,7 @@ form.addEventListener("submit", function (event) {
 
   const confirmPasswordErrorMsg = validateConfirmPassword();
   if (confirmPasswordErrorMsg) {
-    showError(
-      confirmPasswordInput,
-      errorConfirmPassword,
-      confirmPasswordErrorMsg
-    );
+    showError(confirmPasswordInput, errorConfirmPassword, confirmPasswordErrorMsg);
     errores.push(`Repetir contraseña: ${confirmPasswordErrorMsg}`);
   }
 
@@ -288,25 +284,86 @@ form.addEventListener("submit", function (event) {
   }
 
   if (errores.length > 0) {
-    // alert x si hay errores
     alert("Se encontraron errores:\n\n" + errores.join("\n"));
     return;
   }
 
-  // si no hay errores, cartel emergente
-  const resumen = `
-    Nombre completo: ${fullNameInput.value.trim()}
-    Email: ${emailInput.value.trim()}
-    Edad: ${ageInput.value.trim()}
-    Teléfono: ${phoneInput.value.trim()}
-    Dirección: ${addressInput.value.trim()}
-    Ciudad: ${cityInput.value.trim()}
-    Código Postal: ${postalCodeInput.value.trim()}
-    DNI: ${dniInput.value.trim()}
-        `;
-  alert("¡Formulario enviado con éxito!\n\n" + resumen);
+  const data = {
+    name: fullNameInput.value.trim(),
+    email: emailInput.value.trim(),
+    password: passwordInput.value,
+    age: ageInput.value.trim(),
+    telephone: phoneInput.value.trim(),
+    address: addressInput.value.trim(),
+    city: cityInput.value.trim(),
+    postalcode: postalCodeInput.value.trim(),
+    dni: dniInput.value.trim()
+  };
 
-  // limpiar form
-  form.reset();
-  formTitle.textContent = "HOLA";
+  sendData(data);
 });
+
+// Modal
+const modal = document.getElementById("modal");
+const modalTitle = document.getElementById("modal-title");
+const modalBody = document.getElementById("modal-body");
+const modalClose = document.getElementById("modal-close");
+
+modalClose.addEventListener("click", () => modal.classList.add("hidden"));
+window.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") modal.classList.add("hidden");
+});
+
+function openModal(title, content) {
+  modalTitle.textContent = title;
+  modalBody.textContent = content;
+  modal.classList.remove("hidden");
+}
+
+async function sendData(data) {
+  const url = `https://jsonplaceholder.typicode.com/posts`;
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) throw new Error(`Error ${res.status}`);
+
+    const responseData = await res.json();
+
+    localStorage.setItem("subscriptionData", JSON.stringify(responseData));
+    openModal("¡Suscripción exitosa!", JSON.stringify(responseData, null, 2));
+    form.reset();
+    formTitle.textContent = "HOLA";
+  } catch (err) {
+    openModal("Error al enviar datos", err.message);
+  }
+}
+
+
+// cargar datos desde LocalStorage
+window.addEventListener("load", () => {
+  const saved = localStorage.getItem("subscriptionData");
+  if (!saved) return;
+
+  try {
+    const data = JSON.parse(saved);
+    fullNameInput.value = data.name || "";
+    emailInput.value = data.email || "";
+    passwordInput.value = data.password || "";
+    confirmPasswordInput.value = data.password || "";
+    ageInput.value = data.age || "";
+    phoneInput.value = data.telephone || "";
+    addressInput.value = data.address || "";
+    cityInput.value = data.city || "";
+    postalCodeInput.value = data.postalcode || "";
+    dniInput.value = data.dni || "";
+    formTitle.textContent = data.name ? `HOLA ${data.name.toUpperCase()}` : "HOLA";
+  } catch (err) {
+    console.error("Error leyendo localStorage:", err);
+  }
+});
+
